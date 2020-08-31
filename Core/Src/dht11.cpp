@@ -77,6 +77,9 @@ void DHT11::read(){
 	// 2. IF Present: Parse Data
 	_request();
 	if (_checkResponse()) _parse();
+	// TODO
+	// else the values will not change
+	// and there is no indication of error
 }
 
 int8_t DHT11::getTemp(){

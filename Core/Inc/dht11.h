@@ -1,7 +1,18 @@
+/*
+ * helper.h
+ *
+ *  Created on: 31-Aug-2020
+ *      Author: Aakash Kumar
+ */
+#ifndef DHT11_DRIVER
+#define DHT11_DRIVER
+
+
 #include <stdint.h>
 #include "main.h"
+#include "helper.h"
 
-extern inline void delay_ms(size_t time); // FIX
+extern void delay_ms(size_t time); // TODO, test working
 
 class DHT11{
 public:
@@ -11,8 +22,8 @@ public:
 	uint8_t getHumidity();
 
 private:
-	GPIO_TypeDef* const _port;
-	const uint16_t _pin;
+	GPIO_TypeDef* const _port; // TODO, can be optimized, this is using extra memory
+	const uint16_t _pin; // TODO, can be optimized, this is using extra memory
 	int _temp;
 	int _hum;
 	void _request();
@@ -22,3 +33,6 @@ private:
 	void _setOutput();
 	void _setInput();
 };
+
+
+#endif

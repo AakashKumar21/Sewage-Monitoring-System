@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "dht11.h"
 
 /* USER CODE END Includes */
 
@@ -49,6 +50,7 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
+auto dht = DHT11(DHT11_GPIO_Port, DHT11_Pin);
 
 /* USER CODE END PV */
 
@@ -66,11 +68,6 @@ static void MX_TIM1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define TIMER &htim1
-static inline void delay_ms(size_t time){
-	__HAL_TIM_SET_COUNTER(TIMER, 0);
-	while(__HAL_TIM_GET_COUNTER(TIMER) < time);
-}
 
 /* USER CODE END 0 */
 
@@ -81,7 +78,7 @@ static inline void delay_ms(size_t time){
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	dht.read();
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
