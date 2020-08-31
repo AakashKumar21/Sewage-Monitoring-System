@@ -58,10 +58,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define MQ4_Pin_Pin GPIO_PIN_0
-#define MQ4_Pin_GPIO_Port GPIOA
-#define LDR_Pin_Pin GPIO_PIN_1
-#define LDR_Pin_GPIO_Port GPIOA
+#define MQ4_Pin GPIO_PIN_0
+#define MQ4_GPIO_Port GPIOA
+#define LDR_Pin GPIO_PIN_1
+#define LDR_GPIO_Port GPIOA
 #define SERIAL_TX_Pin GPIO_PIN_2
 #define SERIAL_TX_GPIO_Port GPIOA
 #define SERIAL_RX_Pin GPIO_PIN_3
@@ -70,12 +70,12 @@ void Error_Handler(void);
 #define WIFI_TX_GPIO_Port GPIOB
 #define WIFI_RX_Pin GPIO_PIN_11
 #define WIFI_RX_GPIO_Port GPIOB
-#define DHT11_pin_Pin GPIO_PIN_8
-#define DHT11_pin_GPIO_Port GPIOA
-#define ECHO_Pin_Pin GPIO_PIN_9
-#define ECHO_Pin_GPIO_Port GPIOA
-#define TRIG_Pin_Pin GPIO_PIN_10
-#define TRIG_Pin_GPIO_Port GPIOA
+#define DHT11_Pin GPIO_PIN_8
+#define DHT11_GPIO_Port GPIOA
+#define ECHO_Pin GPIO_PIN_9
+#define ECHO_GPIO_Port GPIOA
+#define TRIG_Pin GPIO_PIN_10
+#define TRIG_GPIO_Port GPIOA
 #define GSM_TX_Pin GPIO_PIN_6
 #define GSM_TX_GPIO_Port GPIOB
 #define GSM_RX_Pin GPIO_PIN_7
