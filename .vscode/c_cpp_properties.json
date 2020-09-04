@@ -1,7 +1,8 @@
 {
     "configurations": [
+
         {
-            "name": "Win32",
+            "name": "STM32",
             "includePath": [
                 "${workspaceFolder}/**"
             ],
@@ -10,10 +11,20 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:\\Program Files\\LLVM\\bin\\clang.exe",
+            "compilerPath": "C:\\ARM_EMBED\\bin\\arm-none-eabi-c++.exe",
             "cStandard": "c11",
             "cppStandard": "c++14",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "clang-x64",
+            "forcedInclude": [
+                "${workspaceFolder}\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include\\stm32f103xb.h"
+            ],
+            "compilerArgs": [],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
         }
     ],
     "version": 4
