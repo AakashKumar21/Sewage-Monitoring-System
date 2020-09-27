@@ -66,6 +66,7 @@ static void MX_TIM1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+// extern void DHT11_conf(GPIO_TypeDef* port, uint32_t pin);
 
 /* USER CODE END 0 */
 
@@ -109,29 +110,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   char *startMsg = "Hi There!";
   HAL_UART_Transmit(&huart3, (uint8_t*)startMsg, 9, 10);
-  auto dht = DHT11(DHT11_GPIO_Port, DHT11_Pin);
+  DHT11_conf(DHT11_GPIO_Port, DHT11_Pin);
   char message[30];
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-	HAL_Delay(200);
-	HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-	HAL_Delay(200);
-	HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-	HAL_Delay(200);
-	HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-	HAL_UART_Transmit(&huart3, (uint8_t*)"\nFullData:", 11, 20);
-    dht.read();
-    int t = dht.getTemp();
-    int h = dht.getHumidity();
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+    HAL_Delay(200);
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    HAL_Delay(200);
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+    HAL_Delay(200);
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    HAL_UART_Transmit(&huart3, (uint8_t*)"\nFullData:", 11, 20);
+    read();
+    int t = getTemp();
+    int h = getHumidity();
 
 
     // full data
     sprintf(message,"%d %d %d %d %d\n",
-    		dht.fullData[0],dht.fullData[1],dht.fullData[2],dht.fullData[3],dht.fullData[4]);
+    		fullData[0],fullData[1],fullData[2],fullData[3],fullData[4]);
     HAL_UART_Transmit(&huart3, (uint8_t*)message, 25, 50);
 
     HAL_Delay(3000);

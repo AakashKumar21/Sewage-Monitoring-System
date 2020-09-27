@@ -1,16 +1,12 @@
 #include "dht11.h"
 #include "helper.h"
 
-DHT11::DHT11(GPIO_TypeDef* port,uint32_t pin):
-_port(port),
-_pin(pin),
-_temp(-1),
-_hum(-1)
-{}
+void DHT11_conf(GPIO_TypeDef* port, uint32_t pin){
+    _port = port;
+    _pin = pin;
+}
 
-#define dht11_data_size 40
-
-void DHT11::_setOutput(){
+void _setOutput(){
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	GPIO_InitStruct.Pin = _pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -19,7 +15,7 @@ void DHT11::_setOutput(){
 	HAL_GPIO_Init(_port, &GPIO_InitStruct);
 }
 
-void DHT11::_setInput(){
+void _setInput(){
 	  GPIO_InitTypeDef GPIO_InitStruct = {0};
 	  GPIO_InitStruct.Pin = ECHO_Pin;
 	  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -27,7 +23,7 @@ void DHT11::_setInput(){
 	  HAL_GPIO_Init(_port, &GPIO_InitStruct);
 }
 
-uint8_t DHT11::_checkResponse(){
+uint8_t _checkResponse(){
 	volatile uint8_t response;
 	delay_ms(40);
 	if(! HAL_GPIO_ReadPin(_port, _pin)){
@@ -50,7 +46,7 @@ uint8_t DHT11::_checkResponse(){
 	return response;
 }
 
-void DHT11::_request(){
+void _request(){
 	_setOutput();
     HAL_GPIO_WritePin(_port, _pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
@@ -61,7 +57,7 @@ void DHT11::_request(){
     _setInput();
 }
 
-uint8_t DHT11:: _readByte(){
+uint8_t _readByte(){
 	uint8_t byte = 0;
 	__HAL_TIM_SET_COUNTER(&htim1,0);
 	HAL_TIM_Base_Start(&htim1);
@@ -75,13 +71,13 @@ uint8_t DHT11:: _readByte(){
 		HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 		while ((HAL_GPIO_ReadPin (_port, _pin)));
 	}
-	if(__HAL_TIM_GET_COUNTER(&htim1) > 3800) _status = DHT11_Status::Timeout;
+	if(__HAL_TIM_GET_COUNTER(&htim1) > 3800) _status = Timeout;
 	HAL_TIM_Base_Stop(&htim1);
 	__HAL_TIM_SET_COUNTER(&htim1,0);
 	return byte;
 }
 
-void DHT11:: _parse(){
+void _parse(){
 //	uint8_t _hum = _readByte();
 //	uint8_t decRH = _readByte();
 //	uint8_t _temp = _readByte();
@@ -92,23 +88,23 @@ void DHT11:: _parse(){
 }
 
 
-DHT11_Status DHT11::read(){
+DHT11_Status read(){
 	// Steps to Read
 	// 1. Check Presence
 	// 2. IF Present: Parse Data
 	_request();
 	if (_checkResponse()) _parse();
-	else _status = DHT11_Status::Timeout;
+	else _status = Timeout;
 	return _status;
 	// TODO
 	// else the values will not change
 	// and there is no indication of error
 }
 
-int8_t DHT11::getTemp(){
+int8_t getTemp(){
 	return _temp;
 }
 
-uint8_t DHT11::getHumidity(){
+uint8_t getHumidity(){
 	return _hum;
 }
