@@ -7,22 +7,27 @@
 #ifndef DHT11_DRIVER
 #define DHT11_DRIVER
 
-#include <stdint.h>
-#include "main.h"
-#include "helper.h"
 
-extern void delay_ms(size_t time); // TODO, test working
+#include "main.h"
+
+
+enum class DHT11_Status{
+	OK,
+	Timeout,
+	CheckSumError
+};
 
 class DHT11{
 public:
-	DHT11(GPIO_TypeDef* port, int pin);
-	void read();
+	DHT11(GPIO_TypeDef* port, uint32_t pin);
+	DHT11_Status read();
 	int8_t getTemp();
 	uint8_t getHumidity();
+	uint8_t fullData[5];
 
 private:
 	GPIO_TypeDef* const _port; // TODO, can be optimized, this is using extra memory
-	const uint16_t _pin; // TODO, can be optimized, this is using extra memory
+	uint32_t _pin; // TODO, can be optimized, this is using extra memory
 	int _temp;
 	int _hum;
 	void _request();
@@ -31,6 +36,8 @@ private:
 	uint8_t _readByte();
 	void _setOutput();
 	void _setInput();
+	DHT11_Status _status;
 };
+
 
 #endif
