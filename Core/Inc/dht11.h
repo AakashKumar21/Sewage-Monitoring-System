@@ -11,12 +11,6 @@
 #include "main.h"
 #include "helper.h"
 
-typedef enum{
-	OK,
-	Timeout,
-	CheckSumError
-}DHT11_Status;
-
 extern void delay_ms(size_t time); // TODO, test working
 
 class DHT11{
