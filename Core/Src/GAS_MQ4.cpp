@@ -8,6 +8,10 @@
 *
 *************************************************************************************/
 #include "GAS_MQ4.h"
+#include "main.h"
+#include <cmath>
+
+extern ADC_HandleTypeDef hadc1;
 
 namespace AnalogSensor {
   GAS_MQ4::GAS_MQ4(int pin) {
@@ -18,8 +22,8 @@ namespace AnalogSensor {
   const float m = -0.318;
   const float b = 1.133;
 
-  const float VOLT_RESOLUTION = 5.0; // if 3.3v use 3.3
-  const int ADC_RESOLUTION = 10; // for 10bit analog to digital converter.
+  const float VOLT_RESOLUTION = 3.3; // if 3.3v use 3.3
+  const int ADC_RESOLUTION = 12; // for 12bit analog to digital converter.
 
   const int retries = 50;
   const int retry_interval = 20;
@@ -38,8 +42,9 @@ namespace AnalogSensor {
   double GAS_MQ4::getVoltage() {
     double avg = 0.0;
     for (int i = 0; i < retries; i ++) {
-      avg += analogRead(this->_pin) / retries;
-      delay(retry_interval);
+      HAL_ADC_Start(&hadc1);
+      avg += HAL_ADC_GetValue(&hadc1) / retries; // TODO add error checking
+      HAL_Delay(retry_interval);
     }
 
     double voltage = avg * VOLT_RESOLUTION / (pow(2, ADC_RESOLUTION) - 1);

@@ -16,7 +16,7 @@ class GAS_MQ4
     /**
      * Constructor
      */
-    GAS_MQ4(int pin);
+    GAS_MQ4(int pin); // TODO
     
     /**
      * Returns the PPM concentration
@@ -33,7 +33,7 @@ class GAS_MQ4
      */
     double getVoltage();
   private:
-    int _pin;
+    int _pin; //TODO
 };
 }
 #endif		/* GAS_MQ4_H */

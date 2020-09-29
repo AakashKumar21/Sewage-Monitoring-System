@@ -4,7 +4,8 @@
             "name": "STM32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/Drivers/CMSIS/Include"
+                "${workspaceFolder}/Drivers/CMSIS/Include",
+                "C:/Program Files/LLVM/lib/clang/10.0.0/include/openmp_wrappers"
             ],
             "defines": [
                 "_DEBUG",
