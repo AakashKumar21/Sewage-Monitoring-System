@@ -9,7 +9,7 @@
 
 
 #include "main.h"
-
+#include <stdint.h>
 
 enum class DHT11_Status{
 	OK,

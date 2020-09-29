@@ -1,10 +1,10 @@
 {
     "configurations": [
-
         {
             "name": "STM32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Drivers/CMSIS/Include"
             ],
             "defines": [
                 "_DEBUG",

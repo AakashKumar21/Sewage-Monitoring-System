@@ -1,5 +1,6 @@
 #include "dht11.h"
 #include "helper.h"
+#include "timer.h"
 
 // comment below line to turn off debugging
 #define DEBUG_BY_GPIO
@@ -10,6 +11,7 @@
 #define Low GPIO_PIN_RESET
 #define DGPIO(x) HAL_GPIO_WritePin(DPORT, DPIN, x)
 #endif
+#define TIMEOUT 150
 
 DHT11::DHT11(GPIO_TypeDef* port,uint32_t pin):
 _port(port),
@@ -40,25 +42,22 @@ void DHT11::_setInput(){
 uint8_t DHT11::_checkResponse(){
 	uint8_t response = 0;
 	delay_ms(40);
-	if (!(HAL_GPIO_ReadPin (_port, _pin)))
-	{
+	if (!(HAL_GPIO_ReadPin (_port, _pin))){
 		delay_ms(80);
 		if ((HAL_GPIO_ReadPin (_port, _pin))) response = 1;
-		else response = -1; // 255
+		else response = -1;
 	}
-	// Start timer
-	__HAL_TIM_SET_COUNTER(&htim1,0);
-	HAL_TIM_Base_Start(&htim1);
+
+	timer2.start();
 	// wait for the pin to go low
 	while (HAL_GPIO_ReadPin(_port, _pin) &&
-		   __HAL_TIM_GET_COUNTER(&htim1) < 150);   
+		   timer2.getTick() < TIMEOUT);   
 		
-	if (__HAL_TIM_GET_COUNTER(&htim1) > 150){
+	if (timer2.getTick() > TIMEOUT){
+		_status = DHT11_Status::Timeout;
 		response = 0;
 	}
-	// Stop Timer
-	__HAL_TIM_SET_COUNTER(&htim1,0);
-	HAL_TIM_Base_Stop(&htim1);
+	timer2.stop();
 	return response;
 }
 
@@ -73,52 +72,52 @@ void DHT11::_request(){
 
 uint8_t DHT11:: _readByte(){
 	uint8_t byte;
-	// HAL_TIM_Base_Start(&htim1);
 	for (int i=0; i<8; i++)
 	{
-		// Reset timer cnt
-		// __HAL_TIM_SET_COUNTER(&htim1,0);
+		timer2.start();
 		// wait for the pin to go high
-		while (!(HAL_GPIO_ReadPin (_port, _pin)));
+		while (!(HAL_GPIO_ReadPin (_port, _pin)) &&
+				timer2.getTick() < TIMEOUT );
+		if(timer2.getTick() > TIMEOUT) _status = DHT11_Status::Timeout;
+		timer2.stop();
 		// wait for 40 us
 		delay_ms (40);
-		// if the pin is low
 		DGPIO(High); // to check sampling points
-		if (!(HAL_GPIO_ReadPin (_port, _pin))){
-			// write 0
-			byte&= ~(1<<(7-i));
+		if (!(HAL_GPIO_ReadPin (_port, _pin)) && // if the pin is low
+			timer2.getTick() < TIMEOUT ){ 
+			byte&= ~(1<<(7-i)); // write 0
 		}
-		// if the pin is high, write 1
-		else byte|= (1<<(7-i));
+		else byte|= (1<<(7-i)); // if the pin is high, write 1
 		DGPIO(Low);
-		// reset timer counter
-		// __HAL_TIM_SET_COUNTER(&htim1,0);
-		while (HAL_GPIO_ReadPin (_port, _pin) );  // wait for the pin to go low TODO
+		timer2.start();
+		while (HAL_GPIO_ReadPin (_port, _pin) && // wait for the pin to go low TODO
+				timer2.getTick() < TIMEOUT);  
+		if(timer2.getTick() > TIMEOUT) _status = DHT11_Status::Timeout;
+		timer2.stop();
 	}
-	HAL_TIM_Base_Stop(&htim1);
 	return byte;
 }
 
 void DHT11:: _parse(){
-	uint8_t _hum = _readByte();
-	_readByte();  // Discard Decimal RH
-	uint8_t _temp = _readByte();
-	_readByte();  // Discard Decimal Temp
+	_hum = _readByte();
+	auto byte2 = _readByte();  // Discard Decimal RH
+	_temp = _readByte();
+	auto byte4 = _readByte();  // Discard Decimal Temp
 	uint8_t checkSum = _readByte();
+
+	// Sum of all bytes must be equal to checksum for data integrity
+	if((_hum + _temp + byte2 + byte4) == checkSum){
+		_status = DHT11_Status::OK;
+	}
 }
 
 
 DHT11_Status DHT11::read(){
-	// Steps to Read
-	// 1. Check Presence
-	// 2. IF Present: Parse Data
-	_request();
-	if (_checkResponse()) _parse();
-	else _status = DHT11_Status::Timeout;
+	_request(); // Request temp and hum data
+	if (_checkResponse()) _parse(); // If response is OK then parse data
+	else _status = DHT11_Status::Timeout; // If not OK means its timeout error(DHT11 absent/ not resp)
+	
 	return _status;
-	// TODO
-	// else the values will not change
-	// and there is no indication of error
 }
 
 int8_t DHT11::getTemp(){
