@@ -1,7 +1,8 @@
+#include "main.h"
 // Comment/uncomment below line to turn off/on debugging
 #define DEBUG_BY_GPIO
 #if defined(DEBUG_BY_GPIO)
-#define DGPIO(x) HAL_GPIO_WritePin(DPORT, DPIN, x); HAL_Delay(100);
+#define DGPIO(x) HAL_GPIO_WritePin(DPORT, DPIN, x); HAL_Delay(200);
 #endif
 #if !defined(DEBUG_BY_GPIO)
 #define DGPIO(x)

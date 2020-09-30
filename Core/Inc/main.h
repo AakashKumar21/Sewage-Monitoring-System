@@ -78,10 +78,6 @@ void Error_Handler(void);
 #define ECHO_GPIO_Port GPIOA
 #define TRIG_Pin GPIO_PIN_10
 #define TRIG_GPIO_Port GPIOA
-#define GSM_TX_Pin GPIO_PIN_6
-#define GSM_TX_GPIO_Port GPIOB
-#define GSM_RX_Pin GPIO_PIN_7
-#define GSM_RX_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

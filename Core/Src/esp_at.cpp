@@ -1,6 +1,9 @@
 #include "esp_at.h"
 #include "string_methods.h"
 #include "debug_gpio.h"
+#include "main.h"
+
+extern UART_HandleTypeDef huart3;
 
 enum index{
     Mode,
@@ -36,14 +39,15 @@ _apiKey(api)
     // set single tcp connection
     // tx: AT+
     DGPIO(High);
-    HAL_UART_Transmit(_uart,(uint8_t*)commands[index::AT],   // TODO, not DRY
-                    strlen(commands[index::AT]),10);
     DGPIO(Low);
+    DGPIO(High);
+    HAL_UART_Transmit(&huart3,(uint8_t*)"AT+",3,10);
     // tx: CIPMUX=
     HAL_UART_Transmit(_uart,(uint8_t*)commands[index::TCP_no_of_conn],  
                                strlen(commands[index::TCP_no_of_conn]),20);
     // tx: 0
     HAL_UART_Transmit(_uart,(uint8_t*)"0", 1,2);
+    DGPIO(Low);
 }
 
 bool ESP_AT::connect(char* ssid, char *pass){
