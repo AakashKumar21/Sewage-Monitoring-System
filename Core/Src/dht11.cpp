@@ -2,15 +2,20 @@
 #include "helper.h"
 #include "timer.h"
 
-// comment below line to turn off debugging
+// Comment/uncomment below line to turn off/on debugging
 // #define DEBUG_BY_GPIO
 #if defined(DEBUG_BY_GPIO)
+#define DGPIO(x) HAL_GPIO_WritePin(DPORT, DPIN, x)
+#endif
+#if !defined(DEBUG_BY_GPIO)
+#define DGPIO(x)
+#endif
+
 #define DPORT LED_GPIO_Port
 #define DPIN LED_Pin
 #define High GPIO_PIN_SET
 #define Low GPIO_PIN_RESET
-#define DGPIO(x) HAL_GPIO_WritePin(DPORT, DPIN, x)
-#endif
+
 #define TIMEOUT 150
 
 DHT11::DHT11(GPIO_TypeDef* port,uint32_t pin):

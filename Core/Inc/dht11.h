@@ -11,6 +11,15 @@
 #include "main.h"
 #include <stdint.h>
 
+/***** Working ****
+ * After calling read()
+ * Call _request()
+ * Call _checkReponse and check return
+ * If OK _parse()
+ * return _status
+ * If OK Call getTemp() and getHumidity()
+*/
+
 enum class DHT11_Status{
 	OK, 			// Data recieved and checksum is correct
 	Timeout,		// Sensor not responding or not connected
