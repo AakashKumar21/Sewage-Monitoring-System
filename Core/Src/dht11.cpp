@@ -3,7 +3,7 @@
 #include "timer.h"
 
 // comment below line to turn off debugging
-#define DEBUG_BY_GPIO
+// #define DEBUG_BY_GPIO
 #if defined(DEBUG_BY_GPIO)
 #define DPORT LED_GPIO_Port
 #define DPIN LED_Pin
@@ -20,7 +20,6 @@ _temp(-1),
 _hum(-1)
 {}
 
-#define dht11_data_size 40
 
 void DHT11::_setOutput(){
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -45,7 +44,7 @@ uint8_t DHT11::_checkResponse(){
 	if (!(HAL_GPIO_ReadPin (_port, _pin))){
 		delay_ms(80);
 		if ((HAL_GPIO_ReadPin (_port, _pin))) response = 1;
-		else response = -1;
+		else response = -1;  // TODO
 	}
 
 	timer2.start();
