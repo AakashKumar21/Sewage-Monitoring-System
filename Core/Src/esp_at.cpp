@@ -87,7 +87,7 @@ bool ESP_AT::WifiConnect(char* ssid, char *pass){
 
 bool ESP_AT::updateValue(uint8_t field, int16_t data){
     if(field>8) return 0;
-    uint8_t total_len = 53; // hardcoded for now
+    uint8_t total_len = 53; // hardcoded for now, TODO
     // Connect to Thingspeak
     serialPrint(Cmd.AT);        // AT+
     serialPrint(Cmd.StartConn); // CIPSTART=
