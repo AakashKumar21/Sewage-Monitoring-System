@@ -5,14 +5,15 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/Drivers/CMSIS/Include",
-                "C:/Program Files/LLVM/lib/clang/10.0.0/include/openmp_wrappers"
+                "C:/Program Files/LLVM/lib/clang/10.0.0/include/openmp_wrappers",
+                "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F1xx/Include"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:\\ARM_EMBED\\bin\\arm-none-eabi-c++.exe",
+            "compilerPath": "C:\\ST\\STM32CubeIDE_1.4.0\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.4.0.202007081208\\tools\\bin\\arm-none-eabi-c++.exe",
             "cStandard": "c11",
             "cppStandard": "c++14",
             "intelliSenseMode": "clang-x64",
