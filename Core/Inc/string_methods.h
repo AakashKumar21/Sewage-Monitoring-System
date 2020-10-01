@@ -1,3 +1,6 @@
+#ifdef STRING_METHODS
+#define STRING_METHODS
+
 void swap(char &a, char b){
     auto temp = a;
     b = temp;
@@ -57,3 +60,6 @@ void itoa(t num, char* str, int base)
   
     // return str; 
 } 
+
+
+#endif

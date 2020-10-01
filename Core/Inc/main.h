@@ -64,10 +64,6 @@ void Error_Handler(void);
 #define MQ4_GPIO_Port GPIOA
 #define LDR_Pin GPIO_PIN_1
 #define LDR_GPIO_Port GPIOA
-#define SERIAL_TX_Pin GPIO_PIN_2
-#define SERIAL_TX_GPIO_Port GPIOA
-#define SERIAL_RX_Pin GPIO_PIN_3
-#define SERIAL_RX_GPIO_Port GPIOA
 #define WIFI_TX_Pin GPIO_PIN_10
 #define WIFI_TX_GPIO_Port GPIOB
 #define WIFI_RX_Pin GPIO_PIN_11
