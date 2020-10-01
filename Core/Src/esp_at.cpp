@@ -1,46 +1,122 @@
 #include "esp_at.h"
+#include "string_methods.h"
+#include "debug_gpio.h"
+#include "main.h"
+#include "serial.h"
 
-enum index{
-    Mode,
-    Connect,
-    Reset,
-    Disconnect,
-    AT
+extern UART_HandleTypeDef huart3;
+
+struct Commands{
+    char *const WifiMode;
+    char *const ConnectWifi;
+    char *const Reset;
+    char *const DisconnectWifi;
+    char *const AT;
+    char *const TCP_No_of_conn;
+    char *const StartConn;
+    char *const TcpConn;
+    char *const SendData;
+    char *const EndConn;
 };
 
-char* commands[] = { // Replace CUR with DEF to save in flash
-    "CWMODE_CUR=", 
-    "CWJAP_CUR",
-    "RST",
-    "CWQAP"
-    "AT+",
+struct ThingspeakApi{
+    char *const Part1; // GET /update?api_key=
+    char *const Part2; // &field
 };
+
+Commands Cmd{
+    .WifiMode =         "CWMODE_CUR=",       // Wifi Mode
+    .ConnectWifi =      "CWJAP_CUR=",    // curr AP
+    .Reset =            "RST",                 // Reset
+    .DisconnectWifi =   "CWQAP",       // Disconnect
+    .AT =               "AT+",                      // AT+
+    .TCP_No_of_conn =   "CIPMUX=",     // no. of tcp conn
+    .StartConn =        "CIPSTART=",          // Start conn
+    .TcpConn =          "\"TCP\"",           // conn mode tcp
+    .SendData =         "CIPSEND=",
+    .EndConn =          "CIPEND"
+};
+
+ThingspeakApi Api{
+    "GET /update?api_key=",
+    "&field"
+};
+
+void ESP_AT::_setSingleConn(){
+    // Set single connection
+    serialPrint(Cmd.AT);                // AT+
+    serialPrint(Cmd.TCP_No_of_conn);    // CIPMUX=
+    serialPrint(0);
+    serialPrint("\n");
+}
 
 ESP_AT::ESP_AT(UART_HandleTypeDef* uart):
 _uart(uart)
 {
-    // Set station pt as default
-    // set single tcp connection
+    _setSingleConn();
 }
 
-bool ESP_AT::connect(char* ssid, char *pass){
-    int len; // strlen
-    uint16_t t; // timeout for uart tx
+ESP_AT::ESP_AT(UART_HandleTypeDef* uart, char* ssid, char*pass, char* apiKey):
+_uart(uart),
+_ssid(ssid),
+_pass(pass),
+_apiKey(apiKey)
+{
+    _setSingleConn();
+}
 
-    // tx: AT+
-    HAL_UART_Transmit(_uart,(uint8_t*)commands[index::AT], 
-                     strlen(commands[index::AT]),10);
-    // tx: CWJAP_CUR=
-    HAL_UART_Transmit(_uart,(uint8_t*)commands[index::Connect], 
-                      strlen(commands[index::Connect]),20); 
-    // tx: ssid
-    len = strlen(ssid);
-    HAL_UART_Transmit(_uart,(uint8_t*)ssid, len, len*2);
-    // tx: pass
-    len = strlen(pass);
-    HAL_UART_Transmit(_uart,(uint8_t*)pass, len, len*2);
-    // tx: \n
-    HAL_UART_Transmit(_uart,(uint8_t*)"\n", 1,2); 
+void ESP_AT::setApiKey(char *key){
+    _apiKey = key;
+}
+
+
+bool ESP_AT::WifiConnect(char* ssid, char *pass){
+    serialPrint(Cmd.AT);
+    serialPrint(Cmd.ConnectWifi);
+
+    serialPrint("\"");
+    serialPrint(ssid);
+    serialPrint("\"");
+    serialPrint(",");
+
+    serialPrint("\"");
+    serialPrint(ssid);
+    serialPrint("\"");
+    serialPrint("\n");
+}
+
+bool ESP_AT::updateValue(uint8_t field, int16_t data){
+    if(field>8) return 0;
+    uint8_t total_len = 53; // hardcoded for now
+    // Connect to Thingspeak
+    serialPrint(Cmd.AT);        // AT+
+    serialPrint(Cmd.StartConn); // CIPSTART=
+    serialPrint(Cmd.TcpConn);   // "TCP"
+    serialPrint(",");           // ,
+    serialPrint(_host);         // "api.thingspeak.com"
+    serialPrint(",");           // ,
+    serialPrint(80);           // 80
+    serialPrint("\n");
+
+    //Start sending data
+    serialPrint(Cmd.AT);        // AT+
+    serialPrint(Cmd.SendData);  // CIPSEND=
+    serialPrint(total_len);           // int: len
+    serialPrint("\n");
+
+    // Update value
+    serialPrint(Api.Part1);     // GET /update?api_key=
+    serialPrint(_apiKey);       // XXXXXXXXXXXXXXXX
+    serialPrint(Api.Part2);     // &field
+    serialPrint(field);         // #
+    serialPrint("=");           // =
+    serialPrint(data);          // #
+    serialPrint("\n");          // \n
+
+    // End Connection
+    serialPrint(Cmd.AT);        // AT+
+    serialPrint(Cmd.EndConn);   // CIPEND
+    serialPrint("\n");          // \n
 }
 bool disconnect(){};
 bool restart(){};

@@ -19,11 +19,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "esp_at.h"
+#include "credentials.h"
+#include "serial.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "dht11.h"
-#include <stdio.h>
 
 /* USER CODE END Includes */
 
@@ -47,7 +48,6 @@ ADC_HandleTypeDef hadc1;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 
-UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
@@ -58,7 +58,6 @@ UART_HandleTypeDef huart3;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
-static void MX_USART1_UART_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
@@ -100,7 +99,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ADC1_Init();
-  MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
@@ -110,25 +108,21 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  auto dht = DHT11(DHT11_GPIO_Port, DHT11_Pin);
-  char message[30];
+  auto wifi = ESP_AT(&huart3);
+  wifi.WifiConnect(ssid,pass);
+  wifi.setApiKey(apiKey);
+  serialPrint("Begin Update\n\n");
+  wifi.updateValue(1,23);
+  wifi.updateValue(2,50);
+  wifi.updateValue(3,40);
+  wifi.updateValue(4,450);
+  wifi.updateValue(5,-4650);
+  HAL_Delay(15000);
+
   while (1)
   {
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
-    auto stat = dht.read();
-    int t = dht.getTemp();
-    int h = dht.getHumidity();
-
-    for(int i=0; i<30; i++){
-    	message[i] = 0;
-    }
-   sprintf(message,"(T:%d, Hum:%d, Stat: %d)\n", t, h,stat);
-    
-    HAL_UART_Transmit(&huart3, (uint8_t*)message, 29, 20);
-
-    HAL_Delay(3000);
   }
   /* USER CODE END 3 */
 }
@@ -310,39 +304,6 @@ static void MX_TIM2_Init(void)
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
-
-}
-
-/**
-  * @brief USART1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART1_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART1_Init 0 */
-
-  /* USER CODE END USART1_Init 0 */
-
-  /* USER CODE BEGIN USART1_Init 1 */
-
-  /* USER CODE END USART1_Init 1 */
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART1_Init 2 */
-
-  /* USER CODE END USART1_Init 2 */
 
 }
 
