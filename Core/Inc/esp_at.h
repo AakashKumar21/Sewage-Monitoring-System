@@ -5,11 +5,10 @@
 
 class ESP_AT{
     UART_HandleTypeDef* _uart;
-    char _buff[100];
-    char* _host = "\"api.thingspeak.com\"";
-    char* _apiKey;
     char *_ssid;
     char *_pass;
+    char* _apiKey;
+    char _host[23]; // \"api.thingspeak.com\"\0
     void _setSingleConn();
 
     public:

@@ -2,6 +2,7 @@
 #define TIMER_
 
 #include "main.h"
+#include <stdint.h>
 
 extern TIM_HandleTypeDef htim2;
 class Timer{

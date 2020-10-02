@@ -75,7 +75,7 @@ void DHT11::_request(){
 }
 
 uint8_t DHT11:: _readByte(){
-	uint8_t byte;
+	volatile uint8_t byte;
 	for (int i=0; i<8; i++)
 	{
 		timer2.start();

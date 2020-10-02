@@ -1,8 +1,5 @@
 #include "esp_at.h"
-#include "string_methods.h"
-#include "debug_gpio.h"
-#include "main.h"
-#include "serial.h"
+#include "helper.h"
 
 extern UART_HandleTypeDef huart3;
 
@@ -51,7 +48,8 @@ void ESP_AT::_setSingleConn(){
 }
 
 ESP_AT::ESP_AT(UART_HandleTypeDef* uart):
-_uart(uart)
+_uart(uart),
+_host{"\"api.thingspeak.com\""}
 {
     _setSingleConn();
 }
@@ -60,7 +58,8 @@ ESP_AT::ESP_AT(UART_HandleTypeDef* uart, char* ssid, char*pass, char* apiKey):
 _uart(uart),
 _ssid(ssid),
 _pass(pass),
-_apiKey(apiKey)
+_apiKey(apiKey),
+_host{"\"api.thingspeak.com\""}
 {
     _setSingleConn();
 }
@@ -71,6 +70,8 @@ void ESP_AT::setApiKey(char *key){
 
 
 bool ESP_AT::WifiConnect(char* ssid, char *pass){
+    _ssid = ssid;
+    _ssid = pass;
     serialPrint(Cmd.AT);
     serialPrint(Cmd.ConnectWifi);
 
@@ -80,9 +81,11 @@ bool ESP_AT::WifiConnect(char* ssid, char *pass){
     serialPrint(",");
 
     serialPrint("\"");
-    serialPrint(ssid);
+    serialPrint(pass);
     serialPrint("\"");
     serialPrint("\n");
+
+    return 0;
 }
 
 bool ESP_AT::updateValue(uint8_t field, int16_t data){
@@ -118,5 +121,5 @@ bool ESP_AT::updateValue(uint8_t field, int16_t data){
     serialPrint(Cmd.EndConn);   // CIPEND
     serialPrint("\n");          // \n
 }
-bool disconnect(){};
-bool restart(){};
+bool disconnect(){return 0;};
+bool restart(){return 0;};

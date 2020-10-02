@@ -10,16 +10,19 @@
 
 #include "main.h"
 
-extern TIM_HandleTypeDef htim1;
+void delay_ms(size_t time);
 
-void delay_ms(size_t time){
-	if (time> UINT16_MAX) time = UINT16_MAX; // May cause too much overhead
-											// tradeoff for safety
-	HAL_TIM_Base_Start(&htim1);
-	while(__HAL_TIM_GET_COUNTER(&htim1) < time);
-	HAL_TIM_Base_Stop(&htim1);
-	htim1.Instance->CNT = 0;
-}
+HAL_StatusTypeDef serialPrint(char* data);
+
+HAL_StatusTypeDef _serialPrint(int16_t data);
+
+HAL_StatusTypeDef serialPrint(int data);
+
+void _swap(char &a, char &b);
+
+void _reverse(char str[], int length);
+
+void itoa(int16_t num, char* str, int base=10);
 
 
 #endif /* INC_HELPER_H_ */
