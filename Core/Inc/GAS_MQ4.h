@@ -9,14 +9,18 @@
 **********************************************************************************************/
 #ifndef GAS_MQ4_h
 #define GAS_MQ4_h
-namespace AnalogSensor {
+
+
+#include "main.h"
+
+
 class GAS_MQ4
 {
   public:
     /**
      * Constructor
      */
-    GAS_MQ4(int pin); // TODO
+    GAS_MQ4(ADC_HandleTypeDef* adc); // TODO
     
     /**
      * Returns the PPM concentration
@@ -33,7 +37,6 @@ class GAS_MQ4
      */
     double getVoltage();
   private:
-    int _pin; //TODO
+    ADC_HandleTypeDef* const _adc;
 };
-}
 #endif		/* GAS_MQ4_H */
