@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #include "esp_at.h"
 #include "helper.h"
 
@@ -71,7 +74,7 @@ void ESP_AT::setApiKey(char *key){
 
 bool ESP_AT::WifiConnect(char* ssid, char *pass){
     _ssid = ssid;
-    _ssid = pass;
+    _pass = pass;
     serialPrint(Cmd.AT);
     serialPrint(Cmd.ConnectWifi);
 
