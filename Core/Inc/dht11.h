@@ -13,9 +13,9 @@
 
 /***** Working ****
  * After calling read()
- * Call _request()
- * Call _checkReponse and check return
- * If OK _parse()
+ * read() will call _request()
+ * Call _checkReponse and check return from dht11
+ * If OK _parse() is called
  * return _status
  * If OK Call getTemp() and getHumidity()
 */
@@ -64,7 +64,7 @@ public:
      */
 
 private:
-	void _request();
+	void _request() const;
 	/**
      * @brief Request data from sensor
 	 * 
@@ -92,14 +92,14 @@ private:
 	 * @return byte of data
      */
 
-	void _setOutput();
+	void _setOutput() const;
 	/**
      * @brief Set sensor pin as output
 	 * 
 	 * @return void
      */
 
-	void _setInput();
+	void _setInput() const;
 	/**
      * @brief Set sensor pin as input with pullup
 	 * 
@@ -107,10 +107,9 @@ private:
      */
 
 	GPIO_TypeDef* const _port; // TODO, can be optimized, this is using extra memory
-	uint32_t _pin; // TODO, can be optimized, this is using extra memory
+	const uint32_t _pin; // TODO, can be optimized, this is using extra memory
 	int _temp;
 	int _hum;
-	DHT11_Status _status;
 };
 
 

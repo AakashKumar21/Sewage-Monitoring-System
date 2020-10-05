@@ -26,7 +26,7 @@ _hum(-1)
 {}
 
 
-void DHT11::_setOutput(){
+void DHT11::_setOutput() const{
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	GPIO_InitStruct.Pin = _pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -35,7 +35,7 @@ void DHT11::_setOutput(){
 	HAL_GPIO_Init(_port, &GPIO_InitStruct);
 }
 
-void DHT11::_setInput(){
+void DHT11::_setInput() const{
 	  GPIO_InitTypeDef GPIO_InitStruct = {0};
 	  GPIO_InitStruct.Pin = ECHO_Pin;
 	  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -44,6 +44,7 @@ void DHT11::_setInput(){
 }
 
 uint8_t DHT11::_checkResponse(){
+	DHT11_Status _status{};
 	uint8_t response = 0;
 	delay_ms(40);
 	if (!(HAL_GPIO_ReadPin (_port, _pin))){
@@ -65,7 +66,7 @@ uint8_t DHT11::_checkResponse(){
 	return response;
 }
 
-void DHT11::_request(){
+void DHT11::_request() const{
 	_setOutput();
     HAL_GPIO_WritePin(_port, _pin, GPIO_PIN_RESET);
     delay_ms(18000);
@@ -75,6 +76,7 @@ void DHT11::_request(){
 }
 
 uint8_t DHT11:: _readByte(){
+	DHT11_Status _status{};
 	volatile uint8_t byte;
 	for (int i=0; i<8; i++)
 	{
@@ -103,6 +105,7 @@ uint8_t DHT11:: _readByte(){
 }
 
 void DHT11:: _parse(){
+	DHT11_Status _status{};
 	_hum = _readByte();
 	auto byte2 = _readByte();  // Discard Decimal RH
 	_temp = _readByte();
@@ -117,6 +120,7 @@ void DHT11:: _parse(){
 
 
 DHT11_Status DHT11::read(){
+	DHT11_Status _status{};
 	_request(); // Request temp and hum data
 	if (_checkResponse()) _parse(); // If response is OK then parse data
 	else _status = DHT11_Status::Timeout; // If not OK means its timeout error(DHT11 absent/ not resp)
