@@ -14,6 +14,7 @@ struct Commands{
     char *const TcpConn;
     char *const SendData;
     char *const EndConn;
+    char *const newline; // NL and CR
 };
 
 struct ThingspeakApi{
@@ -31,37 +32,37 @@ Commands Cmd{
     .StartConn =        "CIPSTART=",          // Start conn
     .TcpConn =          "\"TCP\"",           // conn mode tcp
     .SendData =         "CIPSEND=",
-    .EndConn =          "CIPEND"
+    .EndConn =          "CIPCLOSE",
+    .newline =          "\r\n"
 };
 
 ThingspeakApi Api{
-    "GET /update?api_key=",
+    "/update?api_key=",
     "&field"
 };
 
-void ESP_AT::_setSingleConn(){
+void ESP_AT::setSingleConn(){
     // Set single connection
     serialPrint(Cmd.AT);                // AT+
     serialPrint(Cmd.TCP_No_of_conn);    // CIPMUX=
     serialPrint(0);
-    serialPrint("\n");
+    serialPrint(Cmd.newline);
+    HAL_Delay(500);
 }
 
 ESP_AT::ESP_AT(UART_HandleTypeDef* uart):
 _uart(uart),
-_host{"\"api.thingspeak.com\""}
-{
-    _setSingleConn();
-}
+_host{"api.thingspeak.com"}
+{}
 
 ESP_AT::ESP_AT(UART_HandleTypeDef* uart, char* ssid, char*pass, char* apiKey):
 _uart(uart),
 _ssid(ssid),
 _pass(pass),
 _apiKey(apiKey),
-_host{"\"api.thingspeak.com\""}
+_host{"api.thingspeak.com"}
 {
-    _setSingleConn();
+    setSingleConn();
 }
 
 void ESP_AT::setApiKey(char *key){
@@ -83,7 +84,8 @@ bool ESP_AT::WifiConnect(char* ssid, char *pass){
     serialPrint("\"");
     serialPrint(pass);
     serialPrint("\"");
-    serialPrint("\n");
+    serialPrint(Cmd.newline);
+    HAL_Delay(1000);
 
     return 0;
 }
@@ -96,30 +98,37 @@ bool ESP_AT::updateValue(uint8_t field, int16_t data){
     serialPrint(Cmd.StartConn); // CIPSTART=
     serialPrint(Cmd.TcpConn);   // "TCP"
     serialPrint(",");           // ,
+    serialPrint("\"");
     serialPrint(_host);         // "api.thingspeak.com"
+    serialPrint("\"");
     serialPrint(",");           // ,
     serialPrint(80);           // 80
-    serialPrint("\n");
+    serialPrint(Cmd.newline);
+    HAL_Delay(2000);
 
     //Start sending data
     serialPrint(Cmd.AT);        // AT+
     serialPrint(Cmd.SendData);  // CIPSEND=
-    serialPrint(total_len);           // int: len
-    serialPrint("\n");
+    serialPrint("53");           // int: len // TODO
+    serialPrint(Cmd.newline);
+    HAL_Delay(500);
 
     // Update value
-    serialPrint(Api.Part1);     // GET /update?api_key=
+    // GET https://api.thingspeak.com/update?api_key=
+    serialPrint("GET ");
+    serialPrint(Api.Part1);     // /update?api_key=
     serialPrint(_apiKey);       // XXXXXXXXXXXXXXXX
     serialPrint(Api.Part2);     // &field
-    serialPrint(field);         // #
+    serialPrint(field);         // # i.e field no.
     serialPrint("=");           // =
-    serialPrint(data);          // #
-    serialPrint("\n");          // \n
+    serialPrint(data);          // # data
+    serialPrint(Cmd.newline);   // \n
+    HAL_Delay(2000);
 
     // End Connection
     serialPrint(Cmd.AT);        // AT+
-    serialPrint(Cmd.EndConn);   // CIPEND
-    serialPrint("\n");          // \n
+    serialPrint(Cmd.EndConn);   // CIPCLOSE
+    serialPrint(Cmd.newline);   // \n
 }
 bool disconnect(){return 0;};
 bool restart(){return 0;};

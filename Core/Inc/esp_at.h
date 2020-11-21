@@ -9,7 +9,6 @@ class ESP_AT{
     char *_pass;
     char* _apiKey;
     char _host[23]; // \"api.thingspeak.com\"\0
-    void _setSingleConn();
 
     public:
     ESP_AT(UART_HandleTypeDef* uart);
@@ -19,4 +18,5 @@ class ESP_AT{
     bool updateValue(uint8_t field, int16_t data);
     bool WifiDisconnect();
     bool restart();
+    void setSingleConn();
 };
