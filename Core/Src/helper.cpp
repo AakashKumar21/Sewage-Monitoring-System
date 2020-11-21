@@ -23,9 +23,10 @@ HAL_StatusTypeDef serialPrint(char* data){
 }
 
 HAL_StatusTypeDef _serialPrint(int16_t data){
-    const int len = 7;
+    int len = 7;
     char buff[len]{};  // max int len = 6 + null char
     itoa(data,buff);
+    len = strlen(buff);
     return HAL_UART_Transmit(&huart3,(uint8_t*)buff,len,len*time_multiplier);
 }
 
