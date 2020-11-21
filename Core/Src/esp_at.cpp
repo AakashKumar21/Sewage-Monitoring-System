@@ -1,6 +1,5 @@
 #include "esp_at.h"
 #include "helper.h"
-#include "timer.h"
 
 extern UART_HandleTypeDef huart3;
 
@@ -85,22 +84,6 @@ bool ESP_AT::WifiConnect(char* ssid, char *pass){
     serialPrint(pass);
     serialPrint("\"");
     serialPrint("\n");
-
-    // Wait for reply
-    int waitN = 0;
-    while(waitN++ < _timeoutN){
-    	// if required no. of chars recieved, abort waiting
-    	if(!HAL_UART_Receive(_uart, _buffer, 2, _timeout)){
-    		break;
-    	}
-    	// if error in uart i.e not all chars are recieved, wait more
-    }
-    if(!strstr((char*)_buffer,"OK")){
-		static int retries=0;
-		while(retries++ < _maxRetries){
-			WifiConnect(_ssid, _pass);
-		}
-    }
 
     return 0;
 }
