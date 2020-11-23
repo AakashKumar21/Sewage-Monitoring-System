@@ -39,6 +39,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TRIG_PIN            //trigger pin for distance sensor
+#define TRIG_PORT           //trigger port for distance sensor
+#define ECHO_PIN            //echo pin for distance sensor
+#define ECHO_PORT           //echo port for distance sensor
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
