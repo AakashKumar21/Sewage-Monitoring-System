@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "string": "cpp"
+        "string": "cpp",
+        "cstdint": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
