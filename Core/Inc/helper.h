@@ -24,5 +24,7 @@ void _reverse(char str[], int length);
 
 void itoa(int16_t num, char* str, int base=10);
 
+void delay_ms(size_t time);
+
 
 #endif /* INC_HELPER_H_ */
