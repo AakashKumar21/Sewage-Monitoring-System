@@ -28,6 +28,9 @@
 /* USER CODE BEGIN Includes */
 #include "esp_at.h"
 #include "debug_gpio.h"
+#include "GAS_MQ4.h"
+#include "dht11.h"
+#include "distance.h"
 #include "credentials.h"
 
 /* USER CODE END Includes */
@@ -106,29 +109,49 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   auto wifi = ESP_AT(&huart3);
+  auto dht = DHT11(DHT11_GPIO_Port, DHT11_Pin);
+  auto gas = GAS_MQ4();
   wifi.WifiConnect(ssid,pass);
   wifi.setApiKey(apiKey);
-  int counter = 0;
-  int field = 1;
-  wifi.updateValue(field, 21*field);
-  field++;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    DGPIO(High); // Blink
-    DGPIO(Low);
-    if(counter < 15) {
-      counter++;
-      HAL_Delay(800);
+
+    // GET TEMPERATURE AND HUMIDITY
+    if(dht.read() == DHT11_Status::OK){
+      wifi.updateValue(2,dht.getTemp());
+      HAL_Delay(16000);
+      wifi.updateValue(3,dht.getHumidity());
     }
-    else {
-      if(field > 5) field = 1;
-      counter = 0;
-      wifi.updateValue(field, 21*field);
-      field++;
+    else
+    {
+    	// RANDOM
+    	static int i;
+    	if(i>=50){
+    		i=0;
+    	}
+    	else{
+        wifi.updateValue(2,2*i);
+        HAL_Delay(16000);
+        wifi.updateValue(3,2*i);
+        i++;
+    	}
+      // 255 means error
+      // wifi.updateValue(2,255);
+      // HAL_Delay(16000);
+      // wifi.updateValue(3,255);
     }
+    HAL_Delay(16000);
+    
+    // GET DISTANCE
+    wifi.updateValue(4,distance()/10);
+    HAL_Delay(16000);
+
+    // GET GAS
+    wifi.updateValue(1, gas.read());
+    HAL_Delay(16000);
   }
   /* USER CODE END 3 */
 }
