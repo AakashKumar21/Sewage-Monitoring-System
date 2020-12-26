@@ -90,7 +90,7 @@ bool ESP_AT::WifiConnect(char* ssid, char *pass){
     return 0;
 }
 
-bool ESP_AT::updateValue(uint8_t field, int16_t data){
+bool ESP_AT::updateValue(uint8_t field1, int16_t data1,uint8_t field2, int16_t data2,uint8_t field3, int16_t data3,uint8_t field4, int16_t data4 )
     if(field>8) return 0;
     uint8_t total_len = 53; // hardcoded for now, TODO
     // Connect to Thingspeak
@@ -119,9 +119,21 @@ bool ESP_AT::updateValue(uint8_t field, int16_t data){
     serialPrint(Api.Part1);     // /update?api_key=
     serialPrint(_apiKey);       // XXXXXXXXXXXXXXXX
     serialPrint(Api.Part2);     // &field
-    serialPrint(field);         // # i.e field no.
+    serialPrint(field1);         // # i.e field no.
     serialPrint("=");           // =
-    serialPrint(data);          // # data
+    serialPrint(data1);          // # data
+    serialPrint(Api.Part2);     // &field
+    serialPrint(field2);         // # i.e field no.
+    serialPrint("=");           // =
+    serialPrint(data2);          // # data
+    serialPrint(Api.Part2);     // &field
+    serialPrint(field3);         // # i.e field no.
+    serialPrint("=");           // =
+    serialPrint(data3);
+    serialPrint(Api.Part2);     // &field
+    serialPrint(field4);         // # i.e field no.
+    serialPrint("=");           // =
+    serialPrint(data4);        
     serialPrint(Cmd.newline);   // \n
     HAL_Delay(2000);
 

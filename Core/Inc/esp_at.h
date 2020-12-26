@@ -15,7 +15,7 @@ class ESP_AT{
     ESP_AT(UART_HandleTypeDef* uart, char* ssid, char*pass, char* apiKey);
     bool WifiConnect(char* ssid, char *pass);
     void setApiKey(char *key);
-    bool updateValue(uint8_t field, int16_t data);
+    bool updateValue(uint8_t field1, int16_t data1,uint8_t field2, int16_t data2,uint8_t field3, int16_t data3,uint8_t field4, int16_t data4 );
     bool WifiDisconnect();
     bool restart();
     void setSingleConn();

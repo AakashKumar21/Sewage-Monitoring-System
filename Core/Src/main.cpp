@@ -56,7 +56,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+int16_t temp;
+int16_t humi;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -121,37 +122,12 @@ int main(void)
 
     // GET TEMPERATURE AND HUMIDITY
     if(dht.read() == DHT11_Status::OK){
-      wifi.updateValue(2,dht.getTemp());
-      HAL_Delay(16000);
-      wifi.updateValue(3,dht.getHumidity());
+      temp = dht.getTemp();
+      humi = dht.getHumidity();
     }
-    else
-    {
-    	// RANDOM
-    	static int i;
-    	if(i>=50){
-    		i=0;
-    	}
-    	else{
-        wifi.updateValue(2,2*i);
-        HAL_Delay(16000);
-        wifi.updateValue(3,2*i);
-        i++;
-    	}
-      // 255 means error
-      // wifi.updateValue(2,255);
-      // HAL_Delay(16000);
-      // wifi.updateValue(3,255);
-    }
+    wifi.updateValue(1,gas.read(),2,temp,3,humi,4,distance()/10);
     HAL_Delay(16000);
     
-    // GET DISTANCE
-    wifi.updateValue(4,distance()/10);
-    HAL_Delay(16000);
-
-    // GET GAS
-    wifi.updateValue(1, gas.read());
-    HAL_Delay(16000);
   }
   /* USER CODE END 3 */
 }
