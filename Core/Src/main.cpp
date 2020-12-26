@@ -125,7 +125,7 @@ int main(void)
       temp = dht.getTemp();
       humi = dht.getHumidity();
     }
-    wifi.updateValue(1,gas.read(),2,temp,3,humi,4,distance()/10);
+    wifi.updateValue(1,gas.read(),2,temp,3,humi,4,10);
     HAL_Delay(16000);
     
   }

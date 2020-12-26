@@ -90,8 +90,7 @@ bool ESP_AT::WifiConnect(char* ssid, char *pass){
     return 0;
 }
 
-bool ESP_AT::updateValue(uint8_t field1, int16_t data1,uint8_t field2, int16_t data2,uint8_t field3, int16_t data3,uint8_t field4, int16_t data4 )
-    if(field>8) return 0;
+bool ESP_AT::updateValue(uint8_t field1, int16_t data1,uint8_t field2, int16_t data2,uint8_t field3, int16_t data3,uint8_t field4, int16_t data4 ){
     uint8_t total_len = 53; // hardcoded for now, TODO
     // Connect to Thingspeak
     serialPrint(Cmd.AT);        // AT+
